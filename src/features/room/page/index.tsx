@@ -1,5 +1,5 @@
-import {Card} from "antd";
-import {RoomManagement} from "../components/roomManagement.tsx";
+import {Button, Card, Space, Typography} from "antd";
+import {RoomManagement} from "../components/roomManagement";
 
 export const Room = () => {
     return (
@@ -7,10 +7,28 @@ export const Room = () => {
             <Card
                 style={{
                     border: "none",
-                    paddingLeft: "50px",
-                    paddingRight: "50px"    
                 }}
             >
+                <Space
+                    style={{
+                        marginBottom: 20,
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                    }}
+                >
+                    <Typography.Title
+                        style={{
+                            fontSize: 25
+                        }}
+                    >
+                        Quản lý phòng
+                    </Typography.Title>
+
+                    <Button type="primary" size={"middle"}>
+                        Thêm phòng
+                    </Button>
+                </Space>
                 <RoomManagement />
             </Card>
         </>
