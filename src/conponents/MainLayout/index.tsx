@@ -3,7 +3,7 @@ import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import {Link, Outlet} from "react-router-dom";
 import { HomeOutlined, IdcardOutlined, LineChartOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 type MenuItem = {
     key: any;
@@ -79,7 +79,7 @@ const allItems: MenuItem[] = [
 const MainLayout: React.FC = () => {
     const [collapsed, setCollapsed] = useState(false);
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: { colorBgContainer },
     } = theme.useToken();
 
     return (
@@ -89,26 +89,46 @@ const MainLayout: React.FC = () => {
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={allItems} />
             </Sider>
             <Layout>
-                <Header style={{ padding: 0, background: colorBgContainer }} />
-                <Content style={{ margin: '0 16px' }}>
-                    <Breadcrumb style={{ margin: '16px 0' }}>
+                <Header style={{padding: 0, background: colorBgContainer}}/>
+                <div
+                style={{
+                    padding: 12,
+                    paddingBottom: 0,
+                }}
+                >
+                    <Breadcrumb>
                         <Breadcrumb.Item>User</Breadcrumb.Item>
                         <Breadcrumb.Item>Bill</Breadcrumb.Item>
                     </Breadcrumb>
-                    <div
+                </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flex: 1,
+                    }}
+                >
+                    <Content
                         style={{
-                            padding: 24,
-                            minHeight: 360,
-                            background: colorBgContainer,
-                            borderRadius: borderRadiusLG,
+                            padding: 12,
+                            flexGrow: 1,
+                            display: "flex",
+                            flexDirection: "column",
                         }}
                     >
-                        <Outlet />
-                    </div>
-                </Content>
-                <Footer style={{ textAlign: 'center' }}>
-                    Ant Design ©{new Date().getFullYear()} Created by Ant UED
-                </Footer>
+                        <div
+                            style={{
+                                backgroundColor: "white",
+                                flex: 1,
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Outlet/>
+                        </div>
+                    </Content>
+                </div>
             </Layout>
         </Layout>
     );
