@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
-import {Link} from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
 import { HomeOutlined, IdcardOutlined, LineChartOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -47,31 +47,31 @@ const allItems: MenuItem[] = [
     buildMenuItem({
         key: "1",
         label: "Phòng",
-        link: "",
+        link: "/rooms",
         icon: <HomeOutlined />
     }),
     buildMenuItem({
         key: "2",
         label: "Khách hàng",
-        link: "",
+        link: "/customer",
         icon: <TeamOutlined />
     }),
     buildMenuItem({
         key: "3",
         label: "Nhân viên",
-        link: "",
+        link: "/employee",
         icon: <UserOutlined />
     }),
     buildMenuItem({
         key: "4",
         label: "Báo cáo",
-        link: "",
+        link: "/report",
         icon: <LineChartOutlined />
     }),
     buildMenuItem({
         key: "5",
         label: "Profile",
-        link: "",
+        link: "/profile",
         icon: <IdcardOutlined />
     }),
 ];
@@ -83,7 +83,7 @@ const MainLayout: React.FC = () => {
     } = theme.useToken();
 
     return (
-        <Layout style={{ minHeight: '100vh' }}>
+        <Layout hasSider style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
                 {/*logo is here*/}
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={allItems} />
@@ -103,7 +103,7 @@ const MainLayout: React.FC = () => {
                             borderRadius: borderRadiusLG,
                         }}
                     >
-                        Bill is a cat.
+                        <Outlet />
                     </div>
                 </Content>
                 <Footer style={{ textAlign: 'center' }}>

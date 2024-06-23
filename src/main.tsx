@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import {router} from "./conponents/routes";
+import {router} from "./routes";
 import {RouterProvider} from "react-router-dom";
 import { ConfigProvider } from 'antd';
 
