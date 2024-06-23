@@ -1,6 +1,7 @@
 import {Table, TableColumnsType, TableProps} from "antd";
 import {useState} from "react";
 import {ObjectRoomStatus} from "../../../conponents/ObjectStatus/ObjectStatus.tsx";
+import {GetRandomIntInclusive, GetRoomStatusFake} from "../../../utils/fake.ts";
 
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 
@@ -41,21 +42,15 @@ const columns: TableColumnsType<DataType> = [
     }
 ];
 
-function getRandomIntInclusive(min: number, max: number): number {
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
-}
-
 const data: DataType[] = [];
 for (let i = 0; i < 30; i++) {
     data.push({
         key: i,
         roomNumber: i,
-        bedsQuantity: getRandomIntInclusive(1, 3),
-        wcsQuantity: getRandomIntInclusive(1, 3),
-        maximumPeople: getRandomIntInclusive(1, 10),
-        status: <ObjectRoomStatus status={"EMPTY"} />
+        bedsQuantity: GetRandomIntInclusive(1, 3),
+        wcsQuantity: GetRandomIntInclusive(1, 3),
+        maximumPeople: GetRandomIntInclusive(1, 10),
+        status: <ObjectRoomStatus status={GetRoomStatusFake()} />
     });
 }
 
