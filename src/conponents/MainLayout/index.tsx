@@ -83,8 +83,22 @@ const MainLayout: React.FC = () => {
     } = theme.useToken();
 
     return (
-        <Layout hasSider style={{ minHeight: '100vh' }}>
-            <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <Layout hasSider>
+            <Sider
+                breakpoint="md"
+                style={{
+                    overflow: "auto",
+                    height: "100vh",
+                    position: "fixed",
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                }}
+                width={275}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
+            >
                 <Row justify={"center"}>
                     {collapsed ? (
                         <img
@@ -112,9 +126,15 @@ const MainLayout: React.FC = () => {
                 </Row>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={allItems} />
             </Sider>
-            <Layout>
+            <Layout
+                className="site-layout"
+                style={{
+                    marginLeft: collapsed ? 80 : 275,
+                    transition: "margin-left 0.2s",
+                    height: "100vh",
+                }}
+            >
                 <Header style={{padding: 0, background: colorBgContainer}}/>
-
                 <div
                     style={{
                         display: "flex",
