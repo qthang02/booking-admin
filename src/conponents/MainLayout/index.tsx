@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import {Breadcrumb, Layout, Menu, Row, theme} from 'antd';
 import {Link, Outlet} from "react-router-dom";
 import { HomeOutlined, IdcardOutlined, LineChartOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 
@@ -85,7 +85,31 @@ const MainLayout: React.FC = () => {
     return (
         <Layout hasSider style={{ minHeight: '100vh' }}>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-                {/*logo is here*/}
+                <Row justify={"center"}>
+                    {collapsed ? (
+                        <img
+                            src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                            alt="Booking"
+                            style={{
+                                width: 50,
+                                height: 50,
+                                marginTop: 10,
+                                marginBottom: 10,
+                            }}
+                        />
+                    ) : (
+                        <img
+                            src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                            alt="Booking"
+                            style={{
+                                width: 200,
+                                height: 80,
+                                marginTop: 10,
+                                marginBottom: 10,
+                            }}
+                        />
+                    )}
+                </Row>
                 <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={allItems} />
             </Sider>
             <Layout>
