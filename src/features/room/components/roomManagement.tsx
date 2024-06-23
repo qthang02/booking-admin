@@ -2,6 +2,7 @@ import {Table, TableColumnsType, TableProps} from "antd";
 import {useState} from "react";
 import {ObjectRoomStatus} from "../../../conponents/ObjectStatus/ObjectStatus.tsx";
 import {GetRandomIntInclusive, GetRoomStatusFake} from "../../../utils/fake.ts";
+import * as React from "react";
 
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 
@@ -10,35 +11,47 @@ interface DataType {
     roomNumber: number;
     bedsQuantity: number;
     wcsQuantity: number;
-    maximumPeople: number
-    status: React.ReactElement
+    maximumPeople: number,
+    price: Number
+    status: React.ReactElement,
 }
 
 const columns: TableColumnsType<DataType> = [
     {
         title: 'Số phòng',
         dataIndex: "roomNumber",
-        align: "center"
+        align: "center",
+        width: "100px"
     },
     {
         title: 'Số lượng gường ngủ',
         dataIndex: "bedsQuantity",
-        align: "center"
+        align: "center",
+        width: "150px"
     },
     {
         title: 'Số lượng WC',
         dataIndex: "wcsQuantity",
-        align: "center"
+        align: "center",
+        width: "150px"
     },
     {
         title: "Số người tối đa",
         dataIndex: "maximumPeople",
-        align: "center"
+        align: "center",
+        width: "150px"
+    },
+    {
+        title: "Giá",
+        dataIndex: "price",
+        align: "center",
+        width: "100px"
     },
     {
         title: "Trạng thái",
         dataIndex: "status",
-        align: "center"
+        align: "center",
+        width: "110px"
     }
 ];
 
@@ -50,6 +63,7 @@ for (let i = 0; i < 30; i++) {
         bedsQuantity: GetRandomIntInclusive(1, 3),
         wcsQuantity: GetRandomIntInclusive(1, 3),
         maximumPeople: GetRandomIntInclusive(1, 10),
+        price: GetRandomIntInclusive(100, 2000),
         status: <ObjectRoomStatus status={GetRoomStatusFake()} />
     });
 }
@@ -102,6 +116,8 @@ export const RoomManagement = () => {
 
     return (
         <Table
+            bordered
+            size={"large"}
             rowSelection={rowSelection}
             columns={columns}
             dataSource={data}

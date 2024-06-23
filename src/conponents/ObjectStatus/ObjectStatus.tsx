@@ -7,9 +7,13 @@ const CustomTag = (title: string, color: string) => {
         <Tag
             color={color}
             style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                width: "100px",
                 position: "absolute",
-                top: 20,
-                left: 20,
+                top: 10,
+                left: 55,
                 zIndex: 10,
                 padding: 8,
                 borderRadius: 20,
