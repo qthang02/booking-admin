@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Breadcrumb, Layout, Menu, Row, theme} from 'antd';
+import { Layout, Menu, Row, theme} from 'antd';
 import {Link, Outlet} from "react-router-dom";
 import { HomeOutlined, IdcardOutlined, LineChartOutlined, TeamOutlined, UserOutlined} from "@ant-design/icons";
 
@@ -114,17 +114,6 @@ const MainLayout: React.FC = () => {
             </Sider>
             <Layout>
                 <Header style={{padding: 0, background: colorBgContainer}}/>
-                <div
-                style={{
-                    padding: 12,
-                    paddingBottom: 0,
-                }}
-                >
-                    <Breadcrumb>
-                        <Breadcrumb.Item>User</Breadcrumb.Item>
-                        <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                    </Breadcrumb>
-                </div>
 
                 <div
                     style={{
