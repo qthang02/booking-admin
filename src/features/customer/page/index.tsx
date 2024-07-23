@@ -2,22 +2,88 @@ import { Button, Drawer, Form, Input, Modal, Spin, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import {
-  useCreateNewUser,
-  useDeleteUserById,
   useGetOneUserById,
-  useGetallUser,
-  useUpdateUserById,
+  useListUsers,
 } from "../../../query/customer";
 
 import { users } from "../../../model/user";
+import {ColumnsType} from "antd/es/table";
+import Empty from "antd/es/empty/empty";
+
+
+const iconButtonStyle = (isHovered: boolean) => ({
+  backgroundColor: isHovered ? "#4a2a59" : "#663366",
+  borderColor: isHovered ? "#4a2a59" : "#663366",
+  color: "#fff",
+  transition: "all 0.3s ease",
+  margin: "0 5px",
+  borderRadius: "5px",
+  border: "none",
+  padding: "5px 10px",
+});
+
+type TableProps = {
+  handleEdit: (id: number) => void;
+  handleDelete: (id: number) => void;
+}
+
+const newUserTable = (props: TableProps): ColumnsType<users> => {
+  return [
+    {
+      title: "STT",
+      key: "id",
+      render: (_text, _record, index) => index + 1,
+    },
+    {
+      title: "Tên người dùng",
+      dataIndex: "username",
+      key: "username",
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (user: users) => (
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={() => props.handleEdit(user.ID)}
+                style={iconButtonStyle(false)}
+            />
+            <Button
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => props.handleDelete(user.ID)}
+                style={iconButtonStyle(false)}
+            />
+          </div>
+      ),
+    },
+  ]
+}
 
 const CustomerList: React.FC = () => {
   const [form] = Form.useForm();
-  const { data, isLoading, error } = useGetallUser();
+  const listUsers = useListUsers();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const { mutate: createUser } = useCreateNewUser();
+  // const [isUpdating, setIsUpdating] = useState(false);
+  // const { mutate: createUser } = useCreateNewUser();
 
   const {
     mutate: fetchUser,
@@ -25,8 +91,8 @@ const CustomerList: React.FC = () => {
     isLoading: userLoading,
     error: userError,
   } = useGetOneUserById();
-  const { mutate: updateUser } = useUpdateUserById();
-  const { mutate: deleteUser } = useDeleteUserById();
+  // const { mutate: updateUser } = useUpdateUserById();
+  // const { mutate: deleteUser } = useDeleteUserById();
 
   useEffect(() => {
     if (currentUserId !== null) {
@@ -52,118 +118,37 @@ const CustomerList: React.FC = () => {
       okText: "Xóa",
       cancelText: "Hủy",
       onOk: () => {
-        deleteUser(userId);
+        // deleteUser(userId);
       },
     });
   };
 
-  const handleSave = (values: any) => {
-    console.log("Sending data:", values);
-
-    if (currentUserId) {
-      setIsUpdating(true);
-      updateUser({ userId: currentUserId, userData: values }).finally(() => {
-        setIsUpdating(false);
-        form.resetFields();
-        setDrawerOpen(false);
-        setCurrentUserId(null);
-      });
-    } else {
-      createUser(values).finally(() => {
-        setIsUpdating(false);
-        form.resetFields();
-        setDrawerOpen(false);
-        setCurrentUserId(null);
-      });
-    }
-  };
+  // const handleSave = (values: any) => {
+  //   console.log("Sending data:", values);
+  //
+  //   if (currentUserId) {
+  //     setIsUpdating(true);
+  //     updateUser({ userId: currentUserId, userData: values }).finally(() => {
+  //       setIsUpdating(false);
+  //       form.resetFields();
+  //       setDrawerOpen(false);
+  //       setCurrentUserId(null);
+  //     });
+  //   } else {
+  //     createUser(values).finally(() => {
+  //       setIsUpdating(false);
+  //       form.resetFields();
+  //       setDrawerOpen(false);
+  //       setCurrentUserId(null);
+  //     });
+  //   }
+  // };
 
   const handleAddNew = () => {
     setCurrentUserId(null);
     setDrawerOpen(true);
   };
 
-  const iconButtonStyle = (isHovered: boolean) => ({
-    backgroundColor: isHovered ? "#4a2a59" : "#663366",
-    borderColor: isHovered ? "#4a2a59" : "#663366",
-    color: "#fff",
-    transition: "all 0.3s ease",
-    margin: "0 5px",
-    borderRadius: "5px",
-    border: "none",
-    padding: "5px 10px",
-  });
-
-  const columns = [
-    {
-      title: "ID",
-      key: "id",
-      render: (_: any, __: any, index: number) => index + 1,
-    },
-    {
-      title: "Tên người dùng",
-      dataIndex: "username",
-      key: "username",
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_: any, record: users) => (
-        <div style={{ display: "flex", gap: "10px" }}>
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record.ID)}
-            style={iconButtonStyle(false)}
-          />
-          <Button
-            type="danger"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.ID)}
-            style={iconButtonStyle(false)}
-          />
-        </div>
-      ),
-    },
-  ];
-
-  if (isLoading) {
-    return (
-      <div
-        style={{ display: "flex", justifyContent: "center", padding: "20px" }}
-      >
-        <Spin size="large" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div
-        style={{ display: "flex", justifyContent: "center", padding: "20px" }}
-      >
-        Error: {error.message}
-      </div>
-    );
-  }
-
-  // Log the data to check its structure
-  console.log("Fetched data:", data);
 
   return (
     <div style={{ padding: "20px" }}>
@@ -176,13 +161,20 @@ const CustomerList: React.FC = () => {
         Thêm mới
       </Button>
 
-      <Table
-        columns={columns}
-        dataSource={Array.isArray(data) ? data : []}
-        rowKey="id"
-        bordered
-        pagination={{ pageSize: 10 }}
-      />
+      {listUsers?.data?.data && Array.isArray(listUsers.data.data) ? (
+          <Table
+              columns={newUserTable({
+                handleDelete,
+                handleEdit
+              })}
+              rowKey="id"
+              dataSource={listUsers.data.data}
+              bordered
+              pagination={{ pageSize: 10 }}
+          />
+      ) : (
+          <Empty />
+      )}
 
       <Drawer
         title={currentUserId ? "Cập Nhật Người Dùng" : "Thêm Người Dùng"}
@@ -200,7 +192,7 @@ const CustomerList: React.FC = () => {
           <Form
             form={form}
             layout="vertical"
-            onFinish={handleSave}
+            // onFinish={handleSave}
           >
             <Form.Item
               name="username"

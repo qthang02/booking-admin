@@ -19,3 +19,7 @@ export interface CreateUserRequest {
   role: "customer" | "staff" | "admin";
   password: string,
 }
+
+export interface ListUsersResponse {
+  data: users[]
+}

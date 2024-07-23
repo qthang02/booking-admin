@@ -1,4 +1,4 @@
-import { CreateUserRequest, users } from "../model/user";
+import {CreateUserRequest, ListUsersResponse, users} from "../model/user";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import axios from "axios";
@@ -8,19 +8,18 @@ const api = `http://api.thangnq.studio:8080`;
 
 
 // API call to get all users
-const apiGetallUser = (): Promise<users[]> => {
-  return axios.get(`${api}/api/v1/user`).then(response => response.data)
+const apiListUsers = (): Promise<ListUsersResponse> => {
+  return axios.get(`${api}/api/v1/user`).then(resp => resp.data)
 };
 
 // Custom hook for getting all users
-export const useGetallUser = () => {
-  return useQuery<users[], Error>({
+export const useListUsers = () => {
+  return useQuery({
     queryKey: ["user"],
-    queryFn: apiGetallUser,
+    queryFn: apiListUsers,
     onError: (error: Error) => {
       notification.error({
-        message: "Hiển thị thông tin người dùng thất bại",
-        description: `Call api failed: ${error.message}`,
+        message: "Hiển thị thông tin người dùng thất bại: " + error.message,
       });
     },
   });
