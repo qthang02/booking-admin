@@ -3,7 +3,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { useDeleteEmployeeById, useGetOneEmployeeById, useGetallEmployee, useUpdateEmployeeById } from "../../../query/employee";
 
-import { users } from "../../../model/user";
+import { User } from "../../../model/user";
 
 const CustomerList: React.FC = () => {
   const [form] = Form.useForm();
@@ -104,7 +104,7 @@ const CustomerList: React.FC = () => {
     {
       title: 'Action',
       key: 'action',
-      render: (_: any, record: users) => (
+      render: (_: any, record: User) => (
         <div style={{ display: 'flex', gap: '10px' }}>
           <Button
             type="primary"

@@ -1,5 +1,5 @@
 import { Categories } from "../features/categories";
-import CustomerList from "../features/customer/page";
+import CustomerPage from "../features/customer/page";
 import EmployeeList from "../features/employee/page";
 import Login from "../features/login/login";
 import MainLayout from "../conponents/MainLayout";
@@ -18,7 +18,7 @@ export const routes = [
             },
             {
                 path: "/customer",
-                element: <CustomerList />
+                element: <CustomerPage />
             },
             {
                 path: "/employee",

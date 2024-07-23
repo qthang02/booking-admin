@@ -23,3 +23,10 @@ export const ObjectRoomStatusUtils = {
         }
     },
 }
+
+
+export type EventClick =
+    "EVT_NONE" |
+    "EVT_CREATE" |
+    "EVT_DELETE" |
+    "EVT_UPDATE"

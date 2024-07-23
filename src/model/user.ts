@@ -1,5 +1,5 @@
-export interface users {
-  ID: number;
+export interface User {
+  id: number;
   username: string;
   phone: number;
   address: string;
@@ -11,15 +11,14 @@ export interface users {
 }
 
 export interface CreateUserRequest {
-  ID: number;
-  username: string;
-  phone: number;
-  address: string;
-  email: string;
-  role: "customer" | "staff" | "admin";
-  password: string,
+  user: User
 }
 
 export interface ListUsersResponse {
-  data: users[]
+  data: User[]
+}
+
+export interface UpdateUserRequest {
+  id: number;
+  user: User;
 }

@@ -8,7 +8,14 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
 
 // Tạo instance của QueryClient
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: Infinity,
+                cacheTime: Infinity,
+            },
+        },
+    });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <ConfigProvider

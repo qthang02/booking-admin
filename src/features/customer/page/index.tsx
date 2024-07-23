@@ -1,14 +1,16 @@
-import { Button, Drawer, Form, Input, Modal, Spin, Table } from "antd";
+import {Button, Drawer, Modal, Table} from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import React, {useState} from "react";
 import {
-  useGetOneUserById,
-  useListUsers,
+  useDeleteCustomer,
+  useListCustomers,
 } from "../../../query/customer";
 
-import { users } from "../../../model/user";
+import { User } from "../../../model/user";
 import {ColumnsType} from "antd/es/table";
 import Empty from "antd/es/empty/empty";
+import {UserForm} from "../components/userForm.tsx";
+import {EventClick} from "../../../utils/type.ts";
 
 
 const iconButtonStyle = (isHovered: boolean) => ({
@@ -23,11 +25,11 @@ const iconButtonStyle = (isHovered: boolean) => ({
 });
 
 type TableProps = {
-  handleEdit: (id: number) => void;
+  handleEdit: (user: User) => void;
   handleDelete: (id: number) => void;
 }
 
-const newUserTable = (props: TableProps): ColumnsType<users> => {
+const newUserTable = (props: TableProps): ColumnsType<User> => {
   return [
     {
       title: "STT",
@@ -57,58 +59,41 @@ const newUserTable = (props: TableProps): ColumnsType<users> => {
     {
       title: "Action",
       key: "action",
-      render: (user: users) => (
-          <div style={{ display: "flex", gap: "10px" }}>
-            <Button
-                type="primary"
-                icon={<EditOutlined />}
-                onClick={() => props.handleEdit(user.ID)}
-                style={iconButtonStyle(false)}
-            />
-            <Button
-                danger
-                icon={<DeleteOutlined />}
-                onClick={() => props.handleDelete(user.ID)}
-                style={iconButtonStyle(false)}
-            />
-          </div>
-      ),
+      render: (_text, _record) => {
+        return (
+            <div style={{display: "flex", gap: "10px"}}>
+              <Button
+                  type="primary"
+                  icon={<EditOutlined/>}
+                  onClick={() => props.handleEdit(_record)}
+                  style={iconButtonStyle(false)}
+              />
+              <Button
+                  danger
+                  icon={<DeleteOutlined/>}
+                  onClick={() => props.handleDelete(_record.id)}
+                  style={iconButtonStyle(false)}
+              />
+            </div>
+        )
+      },
     },
   ]
 }
 
-const CustomerList: React.FC = () => {
-  const [form] = Form.useForm();
-  const listUsers = useListUsers();
+const CustomerPage: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
-  // const [isUpdating, setIsUpdating] = useState(false);
-  // const { mutate: createUser } = useCreateNewUser();
+  const [titleDrawer, setTitleDrawer] = useState("");
+  const [user, setUser] = useState<User | undefined>(undefined);
+  const listUsers = useListCustomers();
+  const deleteUser = useDeleteCustomer();
+  const [eventClick, setEventClick] = useState<EventClick>("EVT_NONE");
 
-  const {
-    mutate: fetchUser,
-    data: userData,
-    isLoading: userLoading,
-    error: userError,
-  } = useGetOneUserById();
-  // const { mutate: updateUser } = useUpdateUserById();
-  // const { mutate: deleteUser } = useDeleteUserById();
-
-  useEffect(() => {
-    if (currentUserId !== null) {
-      fetchUser(currentUserId);
-    }
-  }, [currentUserId, fetchUser]);
-
-  useEffect(() => {
-    if (userData) {
-      form.setFieldsValue(userData);
-    }
-  }, [userData, form]);
-
-  const handleEdit = (userId: number) => {
-    setCurrentUserId(userId);
+  const handleEdit = (user: User) => {
+    setEventClick("EVT_UPDATE");
+    setUser(user);
     setDrawerOpen(true);
+    setTitleDrawer("Cập nhật người khách hàng");
   };
 
   const handleDelete = (userId: number) => {
@@ -118,54 +103,36 @@ const CustomerList: React.FC = () => {
       okText: "Xóa",
       cancelText: "Hủy",
       onOk: () => {
-        // deleteUser(userId);
+        deleteUser.mutate(userId);
       },
     });
   };
 
-  // const handleSave = (values: any) => {
-  //   console.log("Sending data:", values);
-  //
-  //   if (currentUserId) {
-  //     setIsUpdating(true);
-  //     updateUser({ userId: currentUserId, userData: values }).finally(() => {
-  //       setIsUpdating(false);
-  //       form.resetFields();
-  //       setDrawerOpen(false);
-  //       setCurrentUserId(null);
-  //     });
-  //   } else {
-  //     createUser(values).finally(() => {
-  //       setIsUpdating(false);
-  //       form.resetFields();
-  //       setDrawerOpen(false);
-  //       setCurrentUserId(null);
-  //     });
-  //   }
-  // };
-
   const handleAddNew = () => {
-    setCurrentUserId(null);
+    setUser(undefined);
+    setEventClick("EVT_CREATE");
     setDrawerOpen(true);
+    setTitleDrawer("Thêm người khách hàng");
   };
-
 
   return (
     <div style={{ padding: "20px" }}>
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={handleAddNew}
-        style={{ marginBottom: "20px" }}
-      >
-        Thêm mới
-      </Button>
+     <div>
+       <Button
+           type="primary"
+           icon={<PlusOutlined />}
+           onClick={handleAddNew}
+           style={{ marginBottom: "20px" }}
+       >
+         Thêm mới
+       </Button>
+     </div>
 
       {listUsers?.data?.data && Array.isArray(listUsers.data.data) ? (
           <Table
               columns={newUserTable({
                 handleDelete,
-                handleEdit
+                handleEdit,
               })}
               rowKey="id"
               dataSource={listUsers.data.data}
@@ -177,81 +144,20 @@ const CustomerList: React.FC = () => {
       )}
 
       <Drawer
-        title={currentUserId ? "Cập Nhật Người Dùng" : "Thêm Người Dùng"}
+        title={titleDrawer}
         placement="right"
         closable={false}
         onClose={() => setDrawerOpen(false)}
         open={drawerOpen}
         width={400}
       >
-        {userLoading ? (
-          <Spin size="large" />
-        ) : userError ? (
-          <div>Error: {userError.message}</div>
-        ) : (
-          <Form
-            form={form}
-            layout="vertical"
-            // onFinish={handleSave}
-          >
-            <Form.Item
-              name="username"
-              label="Tên người dùng"
-              rules={[
-                { required: true, message: "Vui lòng nhập tên người dùng!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="phone"
-              label="Số điện thoại"
-              rules={[
-                { required: true, message: "Vui lòng nhập số điện thoại!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="address"
-              label="Địa chỉ"
-              rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              label="Password"
-              rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Lưu
-              </Button>
-              <Button
-                style={{ margin: "0 10px" }}
-                onClick={() => setDrawerOpen(false)}
-              >
-                Hủy
-              </Button>
-            </Form.Item>
-          </Form>
-        )}
+        <UserForm user={user} event={eventClick} />
       </Drawer>
     </div>
   );
 };
 
-export default CustomerList;
+export default CustomerPage;
 
 
 

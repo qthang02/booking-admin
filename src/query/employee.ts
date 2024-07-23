@@ -2,18 +2,18 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import axios from "axios";
 import { notification } from "antd";
-import { users } from "../model/user";
+import { User } from "../model/user";
 
 const api = `http://api.thangnq.studio:8080`;
 
 // API call to get all users
-const apiGetallEmployee = (): Promise<users[]> => {
+const apiGetallEmployee = (): Promise<User[]> => {
   return axios.get(`${api}/api/v1/user`).then(response => response.data);
 };
 
 // Custom hook for getting all users
 export const useGetallEmployee = () => {
-  return useQuery<users[], Error>({
+  return useQuery<User[], Error>({
     queryKey: ["user"],
     queryFn: apiGetallEmployee,
     onError: (error: Error) => {
@@ -26,7 +26,7 @@ export const useGetallEmployee = () => {
 };
 
 // API call to get one user by ID
-const apiGetOneEmployeeById = (userId: number): Promise<users> => {
+const apiGetOneEmployeeById = (userId: number): Promise<User> => {
   return axios.get(`${api}/api/v1/user/${userId.toString()}`).then(response => response.data);
 }
 
@@ -50,7 +50,7 @@ export const useGetOneEmployeeById = () => {
 }
 
 // API call to update user by ID
-export const apiUpdateEmployeeById = (userId: number, userData: Partial<users>): Promise<void> => {
+export const apiUpdateEmployeeById = (userId: number, userData: Partial<User>): Promise<void> => {
   return axios.put(`${api}/api/v1/user/${userId}`, userData)
     .then(() => {
       notification.success({
@@ -70,7 +70,7 @@ export const apiUpdateEmployeeById = (userId: number, userData: Partial<users>):
 export const useUpdateEmployeeById = () => {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: ({ userId, userData }: { userId: number, userData: Partial<users> }) =>
+    mutationFn: ({ userId, userData }: { userId: number, userData: Partial<User> }) =>
       apiUpdateEmployeeById(userId, userData),
     onSuccess: () => {
       client.invalidateQueries("user");
@@ -112,13 +112,13 @@ export const useDeleteEmployeeById = () => {
   });
 };
 
-const apiCreateNewUser = (req: users): Promise<void> => {
+const apiCreateNewUser = (req: User): Promise<void> => {
     return axios.post(`${api}/api/v1/auth/register`, req);
 }
 
 export const useCreateNewUser = () => {
     return useMutation({
-        mutationFn: (req: users) => apiCreateNewUser(req),
+        mutationFn: (req: User) => apiCreateNewUser(req),
         onSuccess: () => {
             notification.success({
                 message: "Tạo user thành công!",
