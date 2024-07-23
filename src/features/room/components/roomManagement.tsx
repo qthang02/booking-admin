@@ -1,8 +1,10 @@
-import {Table, TableColumnsType, TableProps} from "antd";
-import {useState} from "react";
-import {ObjectRoomStatus} from "../../../conponents/ObjectStatus/ObjectStatus.tsx";
-import {GetRandomIntInclusive, GetRoomStatusFake} from "../../../utils/fake.ts";
 import * as React from "react";
+
+import {GetRandomIntInclusive, GetRoomStatusFake} from "../../../utils/fake.ts";
+import {Table, TableColumnsType, TableProps} from "antd";
+
+import {ObjectRoomStatus} from "../../../conponents/ObjectStatus/ObjectStatus.tsx";
+import {useState} from "react";
 
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 

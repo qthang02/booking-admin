@@ -1,10 +1,11 @@
-import {createBrowserRouter} from "react-router-dom";
+import { Categories } from "../features/categories";
+import CustomerList from "../features/customer/page";
+import EmployeeList from "../features/employee/page";
+import Login from "../features/login/login";
 import MainLayout from "../conponents/MainLayout";
-import {Room} from "../features/room/page";
-import {Employee} from "../features/employee/page";
-import {Report} from "../features/report/page";
 import {Profile} from "../features/profile/page";
-import {Customer} from "../features/customer/page";
+import {Room} from "../features/room/page";
+import {createBrowserRouter} from "react-router-dom";
 
 export const routes = [
     {
@@ -17,19 +18,23 @@ export const routes = [
             },
             {
                 path: "/customer",
-                element: <Customer />
+                element: <CustomerList />
             },
             {
                 path: "/employee",
-                element: <Employee />
+                element: <EmployeeList />
             },
             {
-                path: "/report",
-                element: <Report />
+                path: "/categories",
+                element: <Categories />
             },
             {
                 path: "/profile",
                 element: <Profile />
+            },
+            {
+                path: "/login",
+                element: <Login />
             }
         ]
     },
