@@ -1,145 +1,116 @@
-import { Button, Drawer, Modal, Table, notification } from 'antd';
+import { Button, Drawer, Modal, Table } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { useCreateCategory, useDeleteCategory, useListCategories, useUpdateCategory } from '../../../query/categories';
 
 import { Categories } from '../../../model/categories';
 import CategoryForm from '../components/CategoryForm';
+import {ColumnsType} from "antd/es/table";
+import {EventClick} from "../../../utils/type.ts";
+
+
+interface categoryTableProps {
+  handleEdit: (category: Categories) => void;
+  handleDelete:(id: number) => void;
+}
+
+const newCategotyTable = (props: categoryTableProps): ColumnsType<Categories> => [
+  {
+    title: 'STT',
+    key: 'id',
+    render: (_text: string, _record: Categories, index: number) => index + 1,
+  },
+  {
+    title: 'Tên danh mục',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'Mô tả',
+    dataIndex: 'description',
+    key: 'description',
+  },
+  {
+    title: 'Giá',
+    dataIndex: 'price',
+    key: 'price',
+    render: (text: number) => `$${text}`,
+  },
+  {
+    title: 'Hình ảnh',
+    dataIndex: 'image_link',
+    key: 'image_link',
+    render: (image_link: string) => (
+        <img src={image_link} alt="Category" style={{ width: '50px', height: '50px' }} />
+    ),
+  },
+  {
+    title: 'Hành động',
+    key: 'actions',
+    render: (_text, record: Categories) => (
+        <div>
+          <Button
+              icon={<EditOutlined />}
+              onClick={() => props.handleEdit(record)}
+              style={{ marginRight: '8px' }}
+          />
+          <Button
+              icon={<DeleteOutlined />}
+              onClick={() => props.handleDelete(record.ID)}
+              danger
+          />
+        </div>
+    ),
+  },
+];
+
 
 const CategoryPage: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Categories | undefined>(undefined);
-  const [event, setEvent] = useState<'EVT_CREATE' | 'EVT_UPDATE'>('EVT_UPDATE');
+  const [event, setEvent] = useState<EventClick>('EVT_NONE');
 
-  // Fetch categories
-  const { data: categoriesData = [], isLoading, refetch } = useListCategories();
+  const categories = useListCategories();
 
-  // Mutations
   const createCategoryMutation = useCreateCategory();
   const updateCategoryMutation = useUpdateCategory();
   const deleteCategoryMutation = useDeleteCategory();
 
-  // Handle category edit
   const handleEdit = (category: Categories) => {
+    console.log("edit id: " + category.image_link)
     setEvent('EVT_UPDATE');
     setSelectedCategory(category);
     setDrawerOpen(true);
   };
 
-  // Handle category delete
   const handleDelete = (id: number) => {
     Modal.confirm({
       title: 'Xác nhận xóa danh mục',
       content: 'Bạn có chắc chắn muốn xóa danh mục này?',
       onOk: () => {
-        deleteCategoryMutation.mutate(id, {
-          onSuccess: () => {
-            notification.success({ message: 'Xóa danh mục thành công!' });
-            refetch(); // Refetch categories after deletion
-          },
-          onError: (error: unknown) => {
-            notification.error({ message: 'Xóa danh mục thất bại!' });
-          }
-        });
+        deleteCategoryMutation.mutate(id);
       },
     });
   };
 
-  // Handle category creation
   const handleCreate = () => {
     setEvent('EVT_CREATE');
     setSelectedCategory(undefined);
     setDrawerOpen(true);
   };
 
-  // Handle drawer close
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
 
-  // Handle form submit
   const handleFormSubmit = (values: Categories) => {
-    console.log('Submitting form with values:', values); // Log dữ liệu submit
     if (event === 'EVT_UPDATE' && selectedCategory) {
-      updateCategoryMutation.mutate(
-        { id: selectedCategory.id, category: values },
-        {
-          onSuccess: () => {
-            notification.success({ message: 'Cập nhật danh mục thành công!' });
-            setDrawerOpen(false);
-            refetch(); // Refetch categories after update
-          },
-          onError: (error: unknown) => {
-            console.error('Error updating category:', error);
-            notification.error({ message: 'Cập nhật danh mục thất bại!' });
-          },
-        }
-      );
+      updateCategoryMutation.mutate({ id: selectedCategory.ID, category: values });
     } else {
-      createCategoryMutation.mutate(values, {
-        onSuccess: () => {
-          notification.success({ message: 'Tạo danh mục thành công!' });
-          setDrawerOpen(false);
-          refetch(); // Refetch categories after creation
-        },
-        onError: (error: unknown) => {
-          console.error('Error creating category:', error);
-          notification.error({ message: 'Tạo danh mục thất bại!' });
-        },
-      });
+      createCategoryMutation.mutate(values);
     }
   };
 
-  // Table columns
-  const columns = [
-    {
-      title: 'STT',
-      key: 'id',
-      render: (_text: string, _record: Categories, index: number) => index + 1,
-    },
-    {
-      title: 'Tên danh mục',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Mô tả',
-      dataIndex: 'description',
-      key: 'description',
-    },
-    {
-      title: 'Giá',
-      dataIndex: 'price',
-      key: 'price',
-      render: (text: number) => `$${text}`,
-    },
-    {
-      title: 'Hình ảnh',
-      dataIndex: 'image_link',
-      key: 'image_link',
-      render: (image_link: string) => (
-        <img src={image_link} alt="Category" style={{ width: '50px', height: '50px' }} />
-      ),
-    },
-    {
-      title: 'Hành động',
-      key: 'actions',
-      render: (_text: string, record: Categories) => (
-        <div>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ marginRight: '8px' }}
-          />
-          <Button
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record.id)}
-            danger
-          />
-        </div>
-      ),
-    },
-  ];
 
   return (
     <div>
@@ -151,12 +122,19 @@ const CategoryPage: React.FC = () => {
       >
         Thêm danh mục
       </Button>
-      <Table
-        columns={columns}
-        dataSource={categoriesData}
-        rowKey="id"
-        loading={isLoading}
-      />
+
+      {categories.isSuccess && categories.data && (
+          <Table
+              columns={newCategotyTable({
+                handleEdit,
+                handleDelete
+              })}
+              dataSource={categories.data.categories}
+              rowKey="id"
+              loading={categories.isLoading}
+          />
+      )}
+
       <Drawer
         title={event === 'EVT_UPDATE' ? 'Cập nhật danh mục' : 'Tạo danh mục'}
         visible={drawerOpen}
