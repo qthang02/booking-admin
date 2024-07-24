@@ -1,6 +1,6 @@
-import { Categories } from "../features/categories";
+import CategoryPage from "../features/categories/page";
 import CustomerPage from "../features/customer/page";
-import EmployeeList from "../features/employee/page";
+import { EmployeePage } from "../features/employee/page";
 import Login from "../features/login/login";
 import MainLayout from "../conponents/MainLayout";
 import {Profile} from "../features/profile/page";
@@ -22,11 +22,11 @@ export const routes = [
             },
             {
                 path: "/employee",
-                element: <EmployeeList />
+                element: <EmployeePage/>
             },
             {
                 path: "/categories",
-                element: <Categories />
+                element: <CategoryPage />
             },
             {
                 path: "/profile",

@@ -16,6 +16,8 @@ export interface CreateUserRequest {
 
 export interface ListUsersResponse {
   data: User[]
+  total: number;
+  paging: number;
 }
 
 export interface UpdateUserRequest {

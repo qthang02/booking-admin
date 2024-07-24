@@ -5,7 +5,7 @@ import { EventClick } from "../../../utils/type";
 import { User } from "../../../model/user";
 import { useEffect } from "react";
 
-export const UserForm = (props: { user: User | undefined, event: EventClick }) => {
+export const EmployeeForm = (props: { user: User | undefined, event: EventClick }) => {
   const [form] = Form.useForm();
   const updateCustomerMutation = useUpdateCustomer();
   const createCustomerMutation = useCreateCustomer();

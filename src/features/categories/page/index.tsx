@@ -4,24 +4,29 @@ import React, { useState } from 'react';
 import { useCreateCategory, useDeleteCategory, useListCategories, useUpdateCategory } from '../../../query/categories';
 
 import { Categories } from '../../../model/categories';
-import CategoryForm from '../../categories/components/CategoryForm';
+import CategoryForm from '../components/CategoryForm';
 
 const CategoryPage: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Categories | undefined>(undefined);
   const [event, setEvent] = useState<'EVT_CREATE' | 'EVT_UPDATE'>('EVT_UPDATE');
 
+  // Fetch categories
   const { data: categoriesData = [], isLoading, refetch } = useListCategories();
+
+  // Mutations
   const createCategoryMutation = useCreateCategory();
   const updateCategoryMutation = useUpdateCategory();
   const deleteCategoryMutation = useDeleteCategory();
 
+  // Handle category edit
   const handleEdit = (category: Categories) => {
     setEvent('EVT_UPDATE');
     setSelectedCategory(category);
     setDrawerOpen(true);
   };
 
+  // Handle category delete
   const handleDelete = (id: number) => {
     Modal.confirm({
       title: 'Xác nhận xóa danh mục',
@@ -33,30 +38,28 @@ const CategoryPage: React.FC = () => {
             refetch(); // Refetch categories after deletion
           },
           onError: (error: unknown) => {
-            let errorMessage = 'Xóa danh mục thất bại!';
-            if (error instanceof Error) {
-              errorMessage = error.message;
-            } else if (typeof error === 'string') {
-              errorMessage = error;
-            }
-            notification.error({ message: errorMessage });
+            notification.error({ message: 'Xóa danh mục thất bại!' });
           }
         });
       },
     });
   };
 
+  // Handle category creation
   const handleCreate = () => {
     setEvent('EVT_CREATE');
     setSelectedCategory(undefined);
     setDrawerOpen(true);
   };
 
+  // Handle drawer close
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
 
+  // Handle form submit
   const handleFormSubmit = (values: Categories) => {
+    console.log('Submitting form with values:', values); // Log dữ liệu submit
     if (event === 'EVT_UPDATE' && selectedCategory) {
       updateCategoryMutation.mutate(
         { id: selectedCategory.id, category: values },
@@ -67,13 +70,8 @@ const CategoryPage: React.FC = () => {
             refetch(); // Refetch categories after update
           },
           onError: (error: unknown) => {
-            let errorMessage = 'Cập nhật danh mục thất bại!';
-            if (error instanceof Error) {
-              errorMessage = error.message;
-            } else if (typeof error === 'string') {
-              errorMessage = error;
-            }
-            notification.error({ message: errorMessage });
+            console.error('Error updating category:', error);
+            notification.error({ message: 'Cập nhật danh mục thất bại!' });
           },
         }
       );
@@ -85,18 +83,14 @@ const CategoryPage: React.FC = () => {
           refetch(); // Refetch categories after creation
         },
         onError: (error: unknown) => {
-          let errorMessage = 'Tạo danh mục thất bại!';
-          if (error instanceof Error) {
-            errorMessage = error.message;
-          } else if (typeof error === 'string') {
-            errorMessage = error;
-          }
-          notification.error({ message: errorMessage });
+          console.error('Error creating category:', error);
+          notification.error({ message: 'Tạo danh mục thất bại!' });
         },
       });
     }
   };
 
+  // Table columns
   const columns = [
     {
       title: 'STT',
@@ -164,15 +158,12 @@ const CategoryPage: React.FC = () => {
         loading={isLoading}
       />
       <Drawer
-        title={event === 'EVT_CREATE' ? 'Tạo danh mục' : 'Cập nhật danh mục'}
+        title={event === 'EVT_UPDATE' ? 'Cập nhật danh mục' : 'Tạo danh mục'}
         visible={drawerOpen}
         onClose={handleDrawerClose}
-        width={400}
+        width={720}
       >
-        <CategoryForm
-          category={selectedCategory}
-          onSubmit={handleFormSubmit}
-        />
+        <CategoryForm category={selectedCategory} onSubmit={handleFormSubmit} />
       </Drawer>
     </div>
   );
