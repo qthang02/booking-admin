@@ -1,54 +1,39 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { Rooms } from "../model/rooms";
-import axios from "axios";
-import { notification } from "antd";
+import { Rooms } from '../model/rooms';
+import axios from 'axios';
+import { notification } from 'antd';
 
-const api = `https://3586-113-161-37-63.ngrok-free.app`;
+const api = `http://api.thangnq.studio:8080`;
 
-const apiGetAllRooms = (): Promise<void> => {
-  return axios.get(`${api}/api/v1/rooms`);
+const apiListRooms = async () => {
+  const response = await axios.get(`${api}/api/v1/room`);
+  return response.data;
 };
 
-const apiDeleteRoom = (id: number): Promise<void> => {
-  return axios.delete(`${api}/api/v1/rooms/${id}`);
+const apiCreateRoom = async (room: Rooms) => {
+  await axios.post(`${api}/api/v1/room`, room);
 };
 
-const apiUpdateRoom = (id: number, data: Partial<Rooms>): Promise<void> => {
-  return axios.put(`${api}/api/v1/rooms/${id}`, data);
+const apiUpdateRoom = async ({ id, room }: { id: number; room: Rooms }) => {
+  await axios.put(`${api}/api/v1/room/${id}`, room);
 };
 
-const apiGetRoomById = (id: number): Promise<void> => {
-  return axios.get(`${api}/api/v1/rooms/${id}`);
+const apiDeleteRoom = async (id: number) => {
+  await axios.delete(`${api}/api/v1/room/${id}`);
 };
 
-export const useGetAllRooms = () => {
-  return useQuery({
-    queryKey: ["Rooms"],
-    queryFn: apiGetAllRooms,
-    onError: () => {
-      notification.error({
-        message: "Hiển thị danh sách phòng thất bại",
-        description: "Call api failed!",
-      });
-    },
-  });
-};
+export const useListRooms = () => useQuery('rooms', apiListRooms);
 
-export const useDeleteRoom = () => {
+export const useCreateRoom = () => {
   const queryClient = useQueryClient();
-  return useMutation(apiDeleteRoom, {
+  return useMutation(apiCreateRoom, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["Rooms"]);
-      notification.success({
-        message: "Xóa phòng thành công",
-      });
+      queryClient.invalidateQueries('rooms');
+      notification.success({ message: 'Thêm phòng thành công' });
     },
     onError: () => {
-      notification.error({
-        message: "Xóa phòng thất bại",
-        description: "Call api failed!",
-      });
+      notification.error({ message: 'Thêm phòng thất bại' });
     },
   });
 };
@@ -57,27 +42,24 @@ export const useUpdateRoom = () => {
   const queryClient = useQueryClient();
   return useMutation(apiUpdateRoom, {
     onSuccess: () => {
-      queryClient.invalidateQueries(["Rooms"]);
-      notification.success({
-        message: "Cập nhật phòng thành công",
-      });
+      queryClient.invalidateQueries('rooms');
+      notification.success({ message: 'Cập nhật phòng thành công' });
     },
     onError: () => {
-      notification.error({
-        message: "Cập nhật phòng thất bại",
-        description: "Call api failed!",
-      });
+      notification.error({ message: 'Cập nhật phòng thất bại' });
     },
   });
 };
 
-export const useGetRoomById = (id: number) => {
-  return useQuery(["Room", id], () => apiGetRoomById(id), {
+export const useDeleteRoom = () => {
+  const queryClient = useQueryClient();
+  return useMutation(apiDeleteRoom, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('rooms');
+      notification.success({ message: 'Xóa phòng thành công' });
+    },
     onError: () => {
-      notification.error({
-        message: "Lấy thông tin phòng thất bại",
-        description: "Call api failed!",
-      });
+      notification.error({ message: 'Xóa phòng thất bại' });
     },
   });
 };

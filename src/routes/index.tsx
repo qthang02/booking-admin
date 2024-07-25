@@ -4,7 +4,7 @@ import { EmployeePage } from "../features/employee/page";
 import Login from "../features/login/login";
 import MainLayout from "../conponents/MainLayout";
 import {Profile} from "../features/profile/page";
-import {Room} from "../features/room/page";
+import RoomPage from "../features/room/page";
 import {createBrowserRouter} from "react-router-dom";
 
 export const routes = [
@@ -14,7 +14,7 @@ export const routes = [
         children: [
             {
                 path: "/rooms",
-                element: <Room />
+                element: <RoomPage />
             },
             {
                 path: "/customer",

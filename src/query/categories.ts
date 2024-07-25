@@ -1,7 +1,8 @@
+import { Categories, ListCategoriesResponse } from "../model/categories";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
-import {Categories, ListCategoriesResponse} from "../model/categories";
 import axios from "axios";
+import { notification } from "antd";
 
 const api = `http://api.thangnq.studio:8080`;
 
@@ -14,7 +15,7 @@ export const apiUpdateCategory = async (id: number, category: Categories): Promi
 };
   
 const apiDeleteCategory = (id: number): Promise<void> => {
-    return axios.delete(`${api}/api/v1/category/${id}`)
+    return axios.delete(`${api}/api/v1/category/${id}`);
 };
 
 export const apiCreateCategory = async (category: Categories): Promise<void> => {
@@ -32,6 +33,14 @@ export const useUpdateCategory = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries('categories');
+        notification.success({
+          message: 'Cập nhật danh mục thành công',
+        });
+      },
+      onError: () => {
+        notification.error({
+          message: 'Cập nhật danh mục thất bại',
+        });
       },
     }
   );
@@ -42,6 +51,14 @@ export const useDeleteCategory = () => {
   return useMutation((id: number) => apiDeleteCategory(id), {
     onSuccess: () => {
       queryClient.invalidateQueries('categories');
+      notification.success({
+        message: 'Xóa danh mục thành công',
+      });
+    },
+    onError: () => {
+      notification.error({
+        message: 'Xóa danh mục thất bại',
+      });
     },
   });
 };
@@ -51,6 +68,14 @@ export const useCreateCategory = () => {
   return useMutation((category: Categories) => apiCreateCategory(category), {
     onSuccess: () => {
       queryClient.invalidateQueries('categories');
+      notification.success({
+        message: 'Thêm danh mục thành công',
+      });
+    },
+    onError: () => {
+      notification.error({
+        message: 'Thêm danh mục thất bại',
+      });
     },
   });
 };

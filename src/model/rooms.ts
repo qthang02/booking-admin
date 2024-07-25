@@ -1,6 +1,27 @@
+import { Categories } from "./categories";
+import { Order } from "./orders";
+
 export interface Rooms {
-    id: number,
-    room_number: number,
-    status:['active', 'inactive'],
-    category_id: number,
+  ID: number;
+  roomNumber: number;
+  status: number; // 1 or 0
+  categoryId: number;
+  CreatedAt: string;
+  UpdatedAt: string;
+  DeletedAt: string | null;
+  order: Order;
+  category: Categories; // reference to Categories
+}
+
+export interface CreateRoomsRequest {
+  rooms: Rooms;
+}
+
+export interface ListRoomsResponse {
+  rooms: Rooms[];
+}
+
+export interface UpdateRoomsRequest {
+  id: number;
+  rooms: Rooms;
 }
