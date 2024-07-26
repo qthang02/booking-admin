@@ -49,7 +49,10 @@ const RoomPage: React.FC = () => {
     if (event === 'update' && selectedRoom) {
       updateRoomMutation.mutate({ id: selectedRoom.ID, room: values });
     } else {
-      createRoomMutation.mutate(values);
+      createRoomMutation.mutate({
+          roomNumber: values.roomNumber,
+          categoryId: values.categoryId
+      });
     }
     setDrawerOpen(false);
   };

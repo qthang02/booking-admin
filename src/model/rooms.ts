@@ -14,7 +14,8 @@ export interface Rooms {
 }
 
 export interface CreateRoomsRequest {
-  rooms: Rooms;
+  roomNumber: number;
+  categoryId: number;
 }
 
 export interface ListRoomsResponse {

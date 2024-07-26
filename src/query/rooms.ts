@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { Rooms } from '../model/rooms';
+import {CreateRoomsRequest, Rooms} from '../model/rooms';
 import axios from 'axios';
 import { notification } from 'antd';
 
@@ -11,23 +11,24 @@ const apiListRooms = async () => {
   return response.data;
 };
 
-const apiCreateRoom = async (room: Rooms) => {
-  await axios.post(`${api}/api/v1/room`, room);
+const apiCreateRoom = (req: CreateRoomsRequest) => {
+  return axios.post(`${api}/api/v1/room`, req);
 };
 
 const apiUpdateRoom = async ({ id, room }: { id: number; room: Rooms }) => {
-  await axios.put(`${api}/api/v1/room/${id}`, room);
+  return await axios.put(`${api}/api/v1/room/${id}`, room);
 };
 
 const apiDeleteRoom = async (id: number) => {
-  await axios.delete(`${api}/api/v1/room/${id}`);
+  return await axios.delete(`${api}/api/v1/room/${id}`);
 };
 
 export const useListRooms = () => useQuery('rooms', apiListRooms);
 
 export const useCreateRoom = () => {
   const queryClient = useQueryClient();
-  return useMutation(apiCreateRoom, {
+  return useMutation( {
+    mutationFn: (req: CreateRoomsRequest) => apiCreateRoom(req),
     onSuccess: () => {
       queryClient.invalidateQueries('rooms');
       notification.success({ message: 'Thêm phòng thành công' });

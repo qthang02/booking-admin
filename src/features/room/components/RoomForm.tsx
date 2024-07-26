@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select } from 'antd';
+import {Button, Form, InputNumber, Select} from 'antd';
 import React, { useEffect } from 'react';
 
 import { Categories } from '../../../model/categories';
@@ -33,7 +33,7 @@ const RoomForm: React.FC<RoomFormProps> = ({ room, categories, onSubmit }) => {
         label="Số phòng"
         rules={[{ required: true, message: 'Vui lòng nhập số phòng!' }]}
       >
-        <Input />
+        <InputNumber width={"100px"} />
       </Form.Item>
       <Form.Item
         name="categoryId"
