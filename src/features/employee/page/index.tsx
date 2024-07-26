@@ -1,7 +1,7 @@
-import { Button, Drawer, Modal, Table } from "antd";
+import { Button, Drawer, Modal, Pagination, Table } from "antd";
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { useDeleteEmployee, useListEmployee } from "../../../query/employee";
+import { useDeleteEmployee, useListEmployees } from "../../../query/employee";
 
 import { ColumnsType } from "antd/es/table";
 import { EmployeeForm } from "../components/employeeForm";
@@ -86,9 +86,11 @@ export const EmployeePage: React.FC = () => {
   // const [modalOpen, setModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [event, setEvent] = useState<EventClick>("EVT_UPDATE");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const listCustomersQuery = useListEmployee();
-  const deleteCustomerMutation = useDeleteEmployee();
+  const listEmployeesQuery = useListEmployees(currentPage, pageSize);
+  const deleteEmployeeMutation = useDeleteEmployee();
 
   const handleEdit = (user: User) => {
     setEvent("EVT_UPDATE");
@@ -101,7 +103,7 @@ export const EmployeePage: React.FC = () => {
       title: "Xác nhận xóa người dùng",
       content: "Bạn có chắc chắn muốn xóa người dùng này?",
       onOk: () => {
-        deleteCustomerMutation.mutate(id);
+        deleteEmployeeMutation.mutate(id);
       },
     });
   };
@@ -114,6 +116,12 @@ export const EmployeePage: React.FC = () => {
 
   const handleDrawerClose = () => {
     setDrawerOpen(false);
+  };
+  const handlePageChange = (page: number, size?: number) => {
+    setCurrentPage(page);
+    if (size) {
+      setPageSize(size);
+    }
   };
 
   return (
@@ -130,12 +138,20 @@ export const EmployeePage: React.FC = () => {
       </div>
       <Table
         columns={newUserTable({ handleEdit, handleDelete })}
-        dataSource={listCustomersQuery.data?.data}
+        dataSource={listEmployeesQuery.data?.data}
         rowKey="id"
-        loading={listCustomersQuery.isLoading}
+        loading={listEmployeesQuery.isLoading}
         // locale={{
         //   emptyText: <Empty description="Không có người dùng" />,
         // }}
+      />
+      <Pagination
+        current={currentPage}
+        pageSize={pageSize}
+        total={listEmployeesQuery.data?.paging|| 0}
+        onChange={handlePageChange}
+        showSizeChanger
+        pageSizeOptions={[10, 20, 30,50]}
       />
       <Drawer
         title={event === "EVT_CREATE" ? "Tạo người dùng" : "Chỉnh sửa thông tin người dùng"}

@@ -3,7 +3,6 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { useCreateRoom, useDeleteRoom, useListRooms, useUpdateRoom } from '../../../query/rooms';
 
-import { Categories } from '../../../model/categories'; // Đảm bảo import đúng kiểu
 import RoomForm from '../components/RoomForm';
 import { Rooms } from '../../../model/rooms';
 import { useListCategories } from '../../../query/categories';
@@ -13,7 +12,7 @@ const RoomPage: React.FC = () => {
   const [selectedRoom, setSelectedRoom] = useState<Rooms | undefined>(undefined);
   const [event, setEvent] = useState<'create' | 'update' | null>(null);
 
-  const { data: rooms, isLoading } = useListRooms();
+  const { data: roomsData, isLoading } = useListRooms();
   const { data: categoriesData } = useListCategories();
 
   const createRoomMutation = useCreateRoom();
@@ -70,7 +69,7 @@ const RoomPage: React.FC = () => {
       title: 'Loại phòng',
       key: 'category',
       render: (_text: string, record: Rooms) => {
-        const category = categoriesData?.categories?.find((cat: Categories) => cat.ID === record.categoryId);
+        const category = categoriesData?.categories?.find((cat) => cat.ID === record.categoryId);
         return category ? category.name : 'Chưa xác định';
       },
     },
@@ -88,13 +87,22 @@ const RoomPage: React.FC = () => {
           <Button
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
-            style={{ marginRight: '8px', backgroundColor: '#663366', borderColor: '#663366', color: '#fff' }}
+            style={{
+              marginRight: '8px',
+              backgroundColor: '#663366',
+              borderColor: '#663366',
+              color: '#fff',
+            }}
           />
           <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record.ID)}
             danger
-            style={{ backgroundColor: '#663366', borderColor: '#663366', color: '#fff' }}
+            style={{
+              backgroundColor: '#663366',
+              borderColor: '#663366',
+              color: '#fff',
+            }}
           />
         </div>
       ),
@@ -107,15 +115,20 @@ const RoomPage: React.FC = () => {
         type="primary"
         icon={<PlusOutlined />}
         onClick={handleCreate}
-        style={{ marginBottom: '16px', backgroundColor: '#663366', borderColor: '#663366', color: '#fff' }}
+        style={{
+          marginBottom: '16px',
+          backgroundColor: '#663366',
+          borderColor: '#663366',
+          color: '#fff',
+        }}
       >
         Thêm phòng
       </Button>
 
       <Table
         columns={columns}
-        dataSource={rooms?.data}
-        rowKey="id"
+        dataSource={roomsData?.rooms || []}
+        rowKey="ID"
         loading={isLoading}
       />
 
@@ -125,7 +138,7 @@ const RoomPage: React.FC = () => {
         onClose={handleDrawerClose}
         width={720}
       >
-        <RoomForm room={selectedRoom} onSubmit={handleFormSubmit} />
+        <RoomForm room={selectedRoom} categories={categoriesData?.categories || []} onSubmit={handleFormSubmit} />
       </Drawer>
     </div>
   );

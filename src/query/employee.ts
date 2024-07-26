@@ -6,15 +6,16 @@ import { notification } from "antd";
 
 const api = `http://api.thangnq.studio:8080`;
 
-const apiListEmployee = async (): Promise<ListUsersResponse> => {
-  return await axios.get(`${api}/api/v1/user`).then(resp => resp.data);
+const apiListEmployees = async (page: number, limit: number): Promise<ListUsersResponse> => {
+  return await axios.get(`${api}/api/v1/user`, {
+    params: { page, limit }
+  }).then(resp => resp.data);
 };
-
 const apiGetEmployee = async (userId: number): Promise<User> => {
   return await axios.get(`${api}/api/v1/user/${userId}`).then(response => response.data);
 };
 
-const apiUpdateEmployee = (req: UpdateUserRequest): Promise<void> => {
+const apiUpdateEmployees = (req: UpdateUserRequest): Promise<void> => {
   return axios.put(`${api}/api/v1/user/${req.id}`, req.user);
 };
 
@@ -26,15 +27,17 @@ const apiCreateEmployee = (req: CreateUserRequest): Promise<void> => {
   return axios.post(`${api}/api/v1/user`, req.user);
 };
 
-export const useListEmployee = () => {
+export const useListEmployees = (page: number, limit: number) => {
   return useQuery({
-    queryKey: ["users"],
-    queryFn: apiListEmployee,
+    queryKey: ["users", page, limit],
+    queryFn: () => apiListEmployees(page, limit ),
     onError: (error: Error) => {
       notification.error({
         message: "Hiển thị thông tin người dùng thất bại: " + error.message,
       });
     },
+
+
   });
 };
 
@@ -52,7 +55,7 @@ export const useGetEmployee = () => {
 export const useUpdateEmployee = () => {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: (req: UpdateUserRequest) => apiUpdateEmployee(req),
+    mutationFn: (req: UpdateUserRequest) => apiUpdateEmployees(req),
     onSuccess: () => {
       client.invalidateQueries("users");
       notification.success({
