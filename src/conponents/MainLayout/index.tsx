@@ -1,5 +1,6 @@
 import {
   AppstoreOutlined,
+  FileTextOutlined,
   HomeOutlined,
   IdcardOutlined,
   TeamOutlined,
@@ -14,7 +15,7 @@ import { useState } from "react";
 const { Content, Sider } = Layout;
 
 type MenuItem = {
-  key: any;
+  key: number;
   label: React.ReactNode;
   link?: string;
   icon?: React.ReactNode;
@@ -78,6 +79,12 @@ const allItems: MenuItem[] = [
   }),
   buildMenuItem({
     key: "5",
+    label: "Hóa đơn",
+    link: "/order",
+    icon: <FileTextOutlined />,
+  }),
+  buildMenuItem({
+    key: "6",
     label: "Profile",
     link: "/profile",
     icon: <IdcardOutlined />,
@@ -85,7 +92,6 @@ const allItems: MenuItem[] = [
 ];
 
 const MainLayout: React.FC = () => {
-  
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
