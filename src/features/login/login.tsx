@@ -1,18 +1,31 @@
 import { Button, Form, Input, Space } from "antd";
 
+import { Header } from "../../conponents/MainLayout/header";
 import { LoginRequest } from "../../model/authen";
 import React from "react";
 import { useLogin } from "../../query/authen";
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const [form] = Form.useForm();
   const loginMutation = useLogin();
+  const navigate = useNavigate();
 
   const onFinish = (values: LoginRequest) => {
-    loginMutation.mutate(values);
+    loginMutation.mutate(values, {
+      onSuccess: () => {
+        navigate("/profile");
+      },
+      onError: (error) => {
+        // Handle login error here
+        console.error("Login failed", error);
+      },
+    });
   };
+
   return (
     <div className="flex flex-col min-h-screen">
+      <Header/>
       <h1
         style={{
           textAlign: "center",

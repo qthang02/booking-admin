@@ -5,26 +5,33 @@ import axios from "axios";
 import { notification } from "antd";
 
 const api = `http://api.thangnq.studio:8080`;
+const token = localStorage.getItem("token");
+
+const instance = axios.create({
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+})
 
 const apiListCustomers = async (page: number, limit: number): Promise<ListUsersResponse> => {
-  return await axios.get(`${api}/api/v1/user`, {
+  return await instance.get(`${api}/api/v1/user`, {
     params: { page, limit }
   }).then(resp => resp.data);
 };
 const apiGetCustomer = async (userId: number): Promise<User> => {
-  return await axios.get(`${api}/api/v1/user/${userId}`).then(response => response.data);
+  return await instance.get(`${api}/api/v1/user/${userId}`).then(response => response.data);
 };
 
 const apiUpdateCustomers = (req: UpdateUserRequest): Promise<void> => {
-  return axios.put(`${api}/api/v1/user/${req.id}`, req.user);
+  return instance.put(`${api}/api/v1/user/${req.id}`, req.user);
 };
 
 const apiDeleteCustomer = (userId: number): Promise<void> => {
-  return axios.delete(`${api}/api/v1/user/${userId}`);
+  return instance.delete(`${api}/api/v1/user/${userId}`);
 };
 
 const apiCreateCustomer = (req: CreateUserRequest): Promise<void> => {
-  return axios.post(`${api}/api/v1/user`, req.user);
+  return instance.post(`${api}/api/v1/user`, req.user);
 };
 
 export const useListCustomers = (page: number, limit: number) => {

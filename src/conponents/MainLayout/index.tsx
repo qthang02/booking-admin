@@ -6,7 +6,7 @@ import {
   TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Row, theme } from "antd";
+import { Layout, Menu, Row } from "antd";
 import { Link, Outlet } from "react-router-dom";
 
 import { Header } from "./header";
@@ -29,7 +29,7 @@ const buildMenuItem = ({
   icon,
   children,
 }: {
-  key: string;
+  key: number;
   label: React.ReactNode;
   link: string;
   icon?: React.ReactNode;
@@ -54,37 +54,37 @@ const buildMenuItem = ({
 
 const allItems: MenuItem[] = [
   buildMenuItem({
-    key: "1",
+    key: 1,
     label: "Phòng",
     link: "/rooms",
     icon: <HomeOutlined />,
   }),
   buildMenuItem({
-    key: "2",
+    key: 2,
     label: "Khách hàng",
     link: "/customer",
     icon: <TeamOutlined />,
   }),
   buildMenuItem({
-    key: "3",
+    key: 3,
     label: "Nhân viên",
     link: "/employee",
     icon: <UserOutlined />,
   }),
   buildMenuItem({
-    key: "4",
+    key: 4,
     label: "Danh mục",
     link: "/categories",
     icon: <AppstoreOutlined />,
   }),
   buildMenuItem({
-    key: "5",
+    key: 5,
     label: "Hóa đơn",
     link: "/order",
     icon: <FileTextOutlined />,
   }),
   buildMenuItem({
-    key: "6",
+    key: 6,
     label: "Profile",
     link: "/profile",
     icon: <IdcardOutlined />,
@@ -93,9 +93,7 @@ const allItems: MenuItem[] = [
 
 const MainLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
+
 
   return (
     <div>

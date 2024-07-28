@@ -5,26 +5,34 @@ import axios from 'axios';
 
 // API URL
 const API_URL = 'http://api.thangnq.studio:8080/api/v1/order';
+const token = localStorage.getItem("token");
+
+const instance = axios.create({
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+})
+
 
 // Fetch orders
 export const fetchOrders = async (): Promise<ListOrdersResponse> => {
-  const response = await axios.get<ListOrdersResponse>(API_URL);
+  const response = await instance.get<ListOrdersResponse>(API_URL);
   return response.data;
 };
 
 // Create order
 export const createOrder = async (orderRequest: CreateOrdersRequest): Promise<void> => {
-  await axios.post(API_URL, orderRequest);
+  await instance.post(API_URL, orderRequest);
 };
 
 // Update order
 export const updateOrder = async (updateRequest: UpdateOrdersRequest): Promise<void> => {
-  await axios.put(`${API_URL}/${updateRequest.id}`, updateRequest.orders);
+  await instance.put(`${API_URL}/${updateRequest.id}`, updateRequest.orders);
 };
 
 // Delete order
 export const deleteOrder = async (id: number): Promise<void> => {
-  await axios.delete(`${API_URL}/${id}`);
+  await instance.delete(`${API_URL}/${id}`);
 };
 
 // Custom hooks for data fetching and mutation

@@ -55,8 +55,8 @@ const RoomForm: React.FC<RoomFormProps> = ({ room, categories, onSubmit }) => {
           rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
         >
           <Select>
-            <Select.Option value={1}>Active</Select.Option>
-            <Select.Option value={0}>Inactive</Select.Option>
+            <Select.Option value={1}>Occupied</Select.Option>
+            <Select.Option value={0}>Ready</Select.Option>
           </Select>
         </Form.Item>
       )}

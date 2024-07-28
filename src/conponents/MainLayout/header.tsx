@@ -1,44 +1,52 @@
 import { Avatar, Dropdown, MenuProps, Space } from "antd";
 import { MenuOutlined, UserOutlined } from "@ant-design/icons";
-import { NavigateFunction, useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHotel } from "@fortawesome/free-solid-svg-icons";
-
-let navigation: NavigateFunction | ((arg0: string) => void);
+import { useNavigate } from "react-router-dom";
 
 export const Header = () => {
-  navigation = useNavigate();
-  const items: MenuProps["items"] = [
-    {
-      key: "2",
-      label: (
-        <span
-          style={{
-            fontSize: "18px",
-            fontWeight: "bolder",
-          }}
-        >
-          Đăng nhập
-        </span>
-      ),
-      onClick: () => navigation("/login"),
-    },
-    {
-      key: "3",
-      label: (
-        <span
-          style={{
-            fontSize: "18px",
-            fontWeight: "bolder",
-          }}
-        >
-          Đăng xuất
-        </span>
-      ),
-      onClick: () => navigation("/login"),
-    },
-  ];
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const items: MenuProps["items"] = token
+    ? [
+        {
+          key: "3",
+          label: (
+            <span
+              style={{
+                fontSize: "18px",
+                fontWeight: "bolder",
+              }}
+            >
+              Đăng xuất
+            </span>
+          ),
+          onClick: handleLogout,
+        },
+      ]
+    : [
+        {
+          key: "2",
+          label: (
+            <span
+              style={{
+                fontSize: "18px",
+                fontWeight: "bolder",
+              }}
+            >
+              Đăng nhập
+            </span>
+          ),
+          onClick: () => navigate("/login"),
+        },
+      ];
 
   return (
     <Space
@@ -88,21 +96,20 @@ export const Header = () => {
         </span>
       </div>
 
-      <div style={{marginLeft: "-20px"}}>
-      <span
-        style={{
-          color: "#663366",
-          fontWeight: "bold",
-          fontSize: "large",
-          whiteSpace: "nowrap",
-
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "'Lato', sans-serif",
-        }}
-      >
-        SHELBY SAIGON CENTRE
-      </span>
+      <div style={{ marginLeft: "-20px" }}>
+        <span
+          style={{
+            color: "#663366",
+            fontWeight: "bold",
+            fontSize: "large",
+            whiteSpace: "nowrap",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "'Lato', sans-serif",
+          }}
+        >
+          SHELBY SAIGON CENTRE
+        </span>
       </div>
 
       <Dropdown menu={{ items }} placement="bottomRight">

@@ -5,32 +5,37 @@ import axios from "axios";
 import { notification } from "antd";
 
 const api = `http://api.thangnq.studio:8080`;
+const token = localStorage.getItem("token");
 
-const apiListEmployees = async (page: number, limit: number): Promise<ListUsersResponse> => {
-  return await axios.get(`${api}/api/v1/user`, {
-    params: { page, limit }
-  }).then(resp => resp.data);
-};
+const instance = axios.create({
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+})
+
+const apiListEmployees = async (): Promise<ListUsersResponse> => {
+  return await instance.get(`${api}/api/v1/employee`).then(resp => resp.data);
+}
 const apiGetEmployee = async (userId: number): Promise<User> => {
-  return await axios.get(`${api}/api/v1/user/${userId}`).then(response => response.data);
+  return await instance.get(`${api}/api/v1/employee/${userId}`).then(response => response.data);
 };
 
 const apiUpdateEmployees = (req: UpdateUserRequest): Promise<void> => {
-  return axios.put(`${api}/api/v1/user/${req.id}`, req.user);
+  return instance.put(`${api}/api/v1/employee/${req.id}`, req.user);
 };
 
 const apiDeleteEmployee = (userId: number): Promise<void> => {
-  return axios.delete(`${api}/api/v1/user/${userId}`);
+  return instance.delete(`${api}/api/v1/employee/${userId}`);
 };
 
 const apiCreateEmployee = (req: CreateUserRequest): Promise<void> => {
-  return axios.post(`${api}/api/v1/user`, req.user);
+  return instance.post(`${api}/api/v1/employee`, req.user);
 };
 
-export const useListEmployees = (page: number, limit: number) => {
+export const useListEmployees = () => {
   return useQuery({
-    queryKey: ["users", page, limit],
-    queryFn: () => apiListEmployees(page, limit ),
+    queryKey: ["employees"],
+    queryFn: () => apiListEmployees(),
     onError: (error: Error) => {
       notification.error({
         message: "Hiển thị thông tin người dùng thất bại: " + error.message,
@@ -57,7 +62,7 @@ export const useUpdateEmployee = () => {
   return useMutation({
     mutationFn: (req: UpdateUserRequest) => apiUpdateEmployees(req),
     onSuccess: () => {
-      client.invalidateQueries("users");
+      client.invalidateQueries("employees");
       notification.success({
         message: "Cập nhật thông tin người dùng thành công!",
       });

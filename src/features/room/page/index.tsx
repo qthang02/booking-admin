@@ -80,7 +80,7 @@ const RoomPage: React.FC = () => {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-      render: (status: number) => (status === 1 ? 'Active' : 'Inactive'),
+      render: (status: number) => (status === 1 ? 'Ready' : 'Occupied'),
     },
     {
       title: 'Hành động',
