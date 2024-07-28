@@ -1,4 +1,4 @@
-import { Button, Drawer, Modal, Table } from 'antd';
+import { Button, Drawer, Modal, Pagination, Table } from 'antd';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { useCreateRoom, useDeleteRoom, useListRooms, useUpdateRoom } from '../../../query/rooms';
@@ -11,6 +11,8 @@ const RoomPage: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<Rooms | undefined>(undefined);
   const [event, setEvent] = useState<'create' | 'update' | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(50);
 
   const { data: roomsData, isLoading } = useListRooms();
   const { data: categoriesData } = useListCategories();
@@ -50,11 +52,18 @@ const RoomPage: React.FC = () => {
       updateRoomMutation.mutate({ id: selectedRoom.ID, room: values });
     } else {
       createRoomMutation.mutate({
-          roomNumber: values.roomNumber,
-          categoryId: values.categoryId
+        roomNumber: values.roomNumber,
+        categoryId: values.categoryId,
       });
     }
     setDrawerOpen(false);
+  };
+
+  const handlePageChange = (page: number, size?: number) => {
+    setCurrentPage(page);
+    if (size) {
+      setPageSize(size);
+    }
   };
 
   const columns = [
@@ -133,6 +142,17 @@ const RoomPage: React.FC = () => {
         dataSource={roomsData?.rooms || []}
         rowKey="ID"
         loading={isLoading}
+        pagination={false}
+      />
+
+      <Pagination
+        current={currentPage}
+        pageSize={pageSize}
+        total={roomsData?.paging || 0}
+        onChange={handlePageChange}
+        showSizeChanger
+        pageSizeOptions={[10, 20, 30, 50]}
+        style={{ marginTop: '16px', textAlign: 'center' }}
       />
 
       <Drawer

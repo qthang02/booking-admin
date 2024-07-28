@@ -16,7 +16,7 @@ const instance = axios.create({
 });
 
 const apiLogin = (req: LoginRequest): Promise<LoginResponse> => {
-  return axios.post(`${api}/api/v1/auth/login`, req).then((resp) => resp.data);
+  return instance.post(`${api}/api/v1/auth/login`, req).then((resp) => resp.data);
 };
 const apiProfile = (): Promise<User> => {
   return instance.get(`${api}/api/v1/auth/profile`).then(resp => resp.data);
