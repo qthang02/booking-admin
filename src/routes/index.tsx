@@ -37,11 +37,12 @@ export const routes = [
                 path: "/order",
                 element: <OrderPage />
             },
-            {
-                path: "/login",
-                element: <Login />
-            }
-        ]
+            
+        ], 
+    },
+    {
+        path: "/login",
+        element: <Login />
     },
 ];
 

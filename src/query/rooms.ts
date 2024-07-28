@@ -1,26 +1,34 @@
+import {CreateRoomsRequest, Rooms} from '../model/rooms';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import {CreateRoomsRequest, Rooms} from '../model/rooms';
 import axios from 'axios';
 import { notification } from 'antd';
 
 const api = `http://api.thangnq.studio:8080`;
+const token = localStorage.getItem("token");
+
+const instance = axios.create({
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+})
+
 
 const apiListRooms = async () => {
-  const response = await axios.get(`${api}/api/v1/room`);
+  const response = await instance.get(`${api}/api/v1/room`);
   return response.data;
 };
 
 const apiCreateRoom = (req: CreateRoomsRequest) => {
-  return axios.post(`${api}/api/v1/room`, req);
+  return instance.post(`${api}/api/v1/room`, req);
 };
 
 const apiUpdateRoom = async ({ id, room }: { id: number; room: Rooms }) => {
-  return await axios.put(`${api}/api/v1/room/${id}`, room);
+  return await instance.put(`${api}/api/v1/room/${id}`, room);
 };
 
 const apiDeleteRoom = async (id: number) => {
-  return await axios.delete(`${api}/api/v1/room/${id}`);
+  return await instance.delete(`${api}/api/v1/room/${id}`);
 };
 
 export const useListRooms = () => useQuery('rooms', apiListRooms);

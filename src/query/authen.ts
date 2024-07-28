@@ -1,51 +1,54 @@
-import { LoginRequest, RegisterRequset } from "../model/authen";
+import { LoginRequest, LoginResponse } from "../model/authen";
+import { useMutation, useQuery } from "react-query";
 
+import { User } from "../model/user";
 import axios from "axios";
 import { notification } from "antd";
-import { useMutation } from "react-query";
 
-const api = `https://3586-113-161-37-63.ngrok-free.app`;
+const api = `http://api.thangnq.studio:8080`;
 
-const apiRegister = (req: RegisterRequset): Promise<void> => {
-    return axios.post(`${api}/api/v1/auth/register`, req);
-}
+const token = localStorage.getItem("token");
 
-export const useRegister = () => {
-    return useMutation({
-        mutationFn: (req: RegisterRequset) => apiRegister(req),
-        onSuccess: () => {
-            notification.success({
-                message: "Đăng kí thành công!",
-                description: "Call api success!",
-              });
-        },
-        onError: () => {
-            notification.error({
-              message: "Đăng kí thất bại!",
-              description: "Call api failed!",
-            });
-          },
-    })
-}
+const instance = axios.create({
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
 
-const apiLogin = (req: LoginRequest): Promise<void> => {
-    return axios.post(`${api}/api/v1/auth/login`, req);
-}
+const apiLogin = (req: LoginRequest): Promise<LoginResponse> => {
+  return axios.post(`${api}/api/v1/auth/login`, req).then((resp) => resp.data);
+};
+const apiProfile = (): Promise<User> => {
+  return instance.get(`${api}/api/v1/auth/profile`).then(resp => resp.data);
+};
+export const useGetProfile = () => {
+  return useQuery({
+    queryKey: ["profiles"],
+    queryFn: () => apiProfile(),
+    onError: (error: Error) => {
+      notification.error({
+        message: "Hiển thị thông tin người dùng thất bại: " + error.message,
+      });
+    },
+  });
+};
 
 export const useLogin = () => {
-    return useMutation({
-        mutationFn: (req: LoginRequest) => apiLogin(req),
-        onSuccess: () => {
-            notification.success({
-                message: "Đăng nhập thành công!",
-                description: "Call api success!",
-              });
-        },
-        onError: () => {
-            notification.error({
-              message: "Đăng nhập thất bại!",
-              description: "Call api failed!",
-            });
-          },
-    })
-}
+  return useMutation({
+    mutationFn: (req: LoginRequest) => apiLogin(req),
+    onSuccess: (resp: LoginResponse) => {
+      notification.success({
+        message: "Đăng nhập thành công!",
+      });
+
+      if (resp.token) {
+        localStorage.setItem("token", resp.token);
+      }
+    },
+    onError: () => {
+      notification.error({
+        message: "Đăng nhập thất bại!",
+      });
+    },
+  });
+};

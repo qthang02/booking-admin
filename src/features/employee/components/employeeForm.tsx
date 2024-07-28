@@ -1,25 +1,28 @@
 import { Button, Form, Input } from "antd";
-import { useCreateCustomer, useUpdateCustomer } from "../../../query/customer";
+import { useCreateEmployee, useUpdateEmployee } from "../../../query/employee";
 
 import { EventClick } from "../../../utils/type";
 import { User } from "../../../model/user";
 import { useEffect } from "react";
 
-export const EmployeeForm = (props: { user: User | undefined, event: EventClick }) => {
+export const EmployeeForm = (props: {
+  user: User | undefined;
+  event: EventClick;
+}) => {
   const [form] = Form.useForm();
-  const updateCustomerMutation = useUpdateCustomer();
-  const createCustomerMutation = useCreateCustomer();
+  const updateEmployeeMutation = useUpdateEmployee();
+  const createEmployeeMutation = useCreateEmployee();
 
   const onFinish = (value: User) => {
     if (props.event === "EVT_UPDATE") {
-      updateCustomerMutation.mutate({
+      updateEmployeeMutation.mutate({
         id: props.user!.id,
-        user: value
+        user: value,
       });
     }
 
     if (props.event === "EVT_CREATE") {
-      createCustomerMutation.mutate({ user: value });
+      createEmployeeMutation.mutate({ user: value });
     }
   };
 
@@ -32,26 +35,18 @@ export const EmployeeForm = (props: { user: User | undefined, event: EventClick 
   }, [props.user, props.event, form]);
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={onFinish}
-    >
+    <Form form={form} layout="vertical" onFinish={onFinish}>
       <Form.Item
         name="username"
         label="Tên người dùng"
-        rules={[
-          { required: true, message: "Vui lòng nhập tên người dùng!" },
-        ]}
+        rules={[{ required: true, message: "Vui lòng nhập tên người dùng!" }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="phone"
         label="Số điện thoại"
-        rules={[
-          { required: true, message: "Vui lòng nhập số điện thoại!" },
-        ]}
+        rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
       >
         <Input />
       </Form.Item>

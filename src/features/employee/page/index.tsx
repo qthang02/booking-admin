@@ -89,7 +89,7 @@ export const EmployeePage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const listEmployeesQuery = useListEmployees(currentPage, pageSize);
+  const listEmployeesQuery = useListEmployees();
   const deleteEmployeeMutation = useDeleteEmployee();
 
   const handleEdit = (user: User) => {

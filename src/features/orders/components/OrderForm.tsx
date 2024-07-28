@@ -37,7 +37,7 @@ const OrderForm: React.FC<OrderFormProps> = ({ order, rooms, users, onSubmit }) 
       ID: order?.ID || 0, // ID sẽ được gán nếu có
       CreatedAt: order?.CreatedAt || new Date().toISOString(),
       UpdatedAt: new Date().toISOString(),
-      DeletedAt: null, // Có thể thay đổi tùy thuộc vào logic của bạn
+      DeletedAt: null, 
       user: users.find(user => user.id === values.userID) || { id: 0, username: '', phone: 0, address: '', email: '', role: 'customer', updated_at: '', created_at: '', deleted_at: null },
       room: rooms.find(room => room.ID === values.roomNumber) || { ID: 0, roomNumber: 0, status: 1, categoryId: 0, CreatedAt: '', UpdatedAt: '', DeletedAt: null, order: {} as Order, category: {} as Categories }
     };
