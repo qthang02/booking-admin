@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import axios from "axios";
 import { notification } from "antd";
+import {API} from "../utils/config.tsx";
 
-const api = `http://api.thangnq.studio:8080`;
 const token = localStorage.getItem("token");
 
 const instance = axios.create({
@@ -14,19 +14,19 @@ const instance = axios.create({
 })
 
 const apiListCategories = async (): Promise<ListCategoriesResponse> => {
-    return await instance.get(`${api}/api/v1/category`).then(resp => resp.data);
+    return await instance.get(`${API}/api/v1/category`).then(resp => resp.data);
 };
 
 export const apiUpdateCategory = async (id: number, category: Categories): Promise<void> => {
-    return instance.put(`${api}/api/v1/category/${id}`, category);
+    return instance.put(`${API}/api/v1/category/${id}`, category);
 };
   
 const apiDeleteCategory = (id: number): Promise<void> => {
-    return instance.delete(`${api}/api/v1/category/${id}`);
+    return instance.delete(`${API}/api/v1/category/${id}`);
 };
 
 export const apiCreateCategory = async (category: Categories): Promise<void> => {
-    return instance.post(`${api}/api/v1/category`, category);
+    return instance.post(`${API}/api/v1/category`, category);
 };
 
 export const useListCategories = () => {

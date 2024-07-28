@@ -4,8 +4,7 @@ import { useMutation, useQuery } from "react-query";
 import { User } from "../model/user";
 import axios from "axios";
 import { notification } from "antd";
-
-const api = `http://api.thangnq.studio:8080`;
+import {API} from "../utils/config.tsx";
 
 const token = localStorage.getItem("token");
 
@@ -16,10 +15,10 @@ const instance = axios.create({
 });
 
 const apiLogin = (req: LoginRequest): Promise<LoginResponse> => {
-  return axios.post(`${api}/api/v1/auth/login`, req).then((resp) => resp.data);
+  return axios.post(`${API}/api/v1/auth/login`, req).then((resp) => resp.data);
 };
 const apiProfile = (): Promise<User> => {
-  return instance.get(`${api}/api/v1/auth/profile`).then(resp => resp.data);
+  return instance.get(`${API}/api/v1/auth/profile`).then(resp => resp.data);
 };
 export const useGetProfile = () => {
   return useQuery({

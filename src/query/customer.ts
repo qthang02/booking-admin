@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import axios from "axios";
 import { notification } from "antd";
+import {API} from "../utils/config.tsx";
 
-const api = `http://api.thangnq.studio:8080`;
 const token = localStorage.getItem("token");
 
 const instance = axios.create({
@@ -14,24 +14,24 @@ const instance = axios.create({
 })
 
 const apiListCustomers = async (page: number, limit: number): Promise<ListUsersResponse> => {
-  return await instance.get(`${api}/api/v1/user`, {
+  return await instance.get(`${API}/api/v1/user`, {
     params: { page, limit }
   }).then(resp => resp.data);
 };
 const apiGetCustomer = async (userId: number): Promise<User> => {
-  return await instance.get(`${api}/api/v1/user/${userId}`).then(response => response.data);
+  return await instance.get(`${API}/api/v1/user/${userId}`).then(response => response.data);
 };
 
 const apiUpdateCustomers = (req: UpdateUserRequest): Promise<void> => {
-  return instance.put(`${api}/api/v1/user/${req.id}`, req.user);
+  return instance.put(`${API}/api/v1/user/${req.id}`, req.user);
 };
 
 const apiDeleteCustomer = (userId: number): Promise<void> => {
-  return instance.delete(`${api}/api/v1/user/${userId}`);
+  return instance.delete(`${API}/api/v1/user/${userId}`);
 };
 
 const apiCreateCustomer = (req: CreateUserRequest): Promise<void> => {
-  return instance.post(`${api}/api/v1/user`, req.user);
+  return instance.post(`${API}/api/v1/user`, req.user);
 };
 
 export const useListCustomers = (page: number, limit: number) => {

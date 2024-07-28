@@ -3,8 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import axios from "axios";
 import { notification } from "antd";
+import {API} from "../utils/config.tsx";
 
-const api = `http://api.thangnq.studio:8080`;
 const token = localStorage.getItem("token");
 
 const instance = axios.create({
@@ -14,22 +14,22 @@ const instance = axios.create({
 })
 
 const apiListEmployees = async (): Promise<ListUsersResponse> => {
-  return await instance.get(`${api}/api/v1/employee`).then(resp => resp.data);
+  return await instance.get(`${API}/api/v1/employee`).then(resp => resp.data);
 }
 const apiGetEmployee = async (userId: number): Promise<User> => {
-  return await instance.get(`${api}/api/v1/employee/${userId}`).then(response => response.data);
+  return await instance.get(`${API}/api/v1/employee/${userId}`).then(response => response.data);
 };
 
 const apiUpdateEmployees = (req: UpdateUserRequest): Promise<void> => {
-  return instance.put(`${api}/api/v1/employee/${req.id}`, req.user);
+  return instance.put(`${API}/api/v1/employee/${req.id}`, req.user);
 };
 
 const apiDeleteEmployee = (userId: number): Promise<void> => {
-  return instance.delete(`${api}/api/v1/employee/${userId}`);
+  return instance.delete(`${API}/api/v1/employee/${userId}`);
 };
 
 const apiCreateEmployee = (req: CreateUserRequest): Promise<void> => {
-  return instance.post(`${api}/api/v1/employee`, req.user);
+  return instance.post(`${API}/api/v1/employee`, req.user);
 };
 
 export const useListEmployees = () => {

@@ -2,9 +2,8 @@ import { CreateOrdersRequest, ListOrdersResponse, UpdateOrdersRequest } from '..
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import axios from 'axios';
+import {API} from "../utils/config.tsx";
 
-// API URL
-const API_URL = 'http://api.thangnq.studio:8080/api/v1/order';
 const token = localStorage.getItem("token");
 
 const instance = axios.create({
@@ -16,23 +15,23 @@ const instance = axios.create({
 
 // Fetch orders
 export const fetchOrders = async (): Promise<ListOrdersResponse> => {
-  const response = await instance.get<ListOrdersResponse>(API_URL);
+  const response = await instance.get<ListOrdersResponse>(`${API}/api/v1/order`);
   return response.data;
 };
 
 // Create order
 export const createOrder = async (orderRequest: CreateOrdersRequest): Promise<void> => {
-  await instance.post(API_URL, orderRequest);
+  await instance.post(`${API}/api/v1/order`, orderRequest);
 };
 
 // Update order
 export const updateOrder = async (updateRequest: UpdateOrdersRequest): Promise<void> => {
-  await instance.put(`${API_URL}/${updateRequest.id}`, updateRequest.orders);
+  await instance.put(`${API}/api/v1/order/${updateRequest.id}`, updateRequest.orders);
 };
 
 // Delete order
 export const deleteOrder = async (id: number): Promise<void> => {
-  await instance.delete(`${API_URL}/${id}`);
+  await instance.delete(`${API}/api/v1/order/${id}`);
 };
 
 // Custom hooks for data fetching and mutation
